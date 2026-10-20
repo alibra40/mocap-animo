@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { FBXLoader } from "jsm/loaders/FBXLoader.js";
+import { GLTFLoader } from "jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
 import { FilesetResolver, PoseLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest";
 import getLayer from "./libs/getLayer.js";
@@ -114,6 +115,31 @@ function setupActions(character, animations) {
     actions.push(action);
   });
   return actions;
+}
+
+// -----------------------------
+// Mixamo model support (keeps existing robot code)
+// -----------------------------
+let mixamoModel = null;
+
+function loadMixamoModel() {
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.load(
+    "./assets/xbot.glb",
+    (gltf) => {
+      mixamoModel = gltf.scene;
+      mixamoModel.position.set(0, -1.3, 0);
+      mixamoModel.scale.set(0.9, 0.9, 0.9);
+      scene.add(mixamoModel);
+      console.log("Mixamo GLB loaded:", gltf);
+      statusEl.textContent = "Mixamo XBot loaded";
+    },
+    undefined,
+    (error) => {
+      console.warn("Could not load Mixamo GLB:", error);
+      statusEl.textContent = "XBot not found — existing robot remains";
+    }
+  );
 }
 
 // -----------------------------
@@ -305,6 +331,10 @@ function initScene(sceneData) {
 
     character?.userData.update(timeElapsed);
 
+    if (mixamoModel) {
+      mixamoModel.rotation.y += 0.003;
+    }
+
     if (poseLandmarker && sourceVideo.readyState >= 2 && !sourceVideo.paused) {
       frameSkip++;
       if (frameSkip % PROCESS_EVERY === 0) {
@@ -350,6 +380,7 @@ function initScene(sceneData) {
   });
 }
 
+loadMixamoModel();
 setupPoseLandmarker().catch((err) => {
   console.error(err);
   statusEl.textContent = "Pose model failed to load";
