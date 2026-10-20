@@ -3,22 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Robot Bobby Chracter Animation</title>
+    <title>Robot Bobby Character Animation + Mocap</title>
     <style>
-      body {
+      html, body {
         margin: 0;
+        overflow: hidden;
+        background: #070b12;
+      }
+
+      #videoPanel {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: 260px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.08);
+        display: none;
+        z-index: 10;
+      }
+
+      #videoPanel video {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #000;
+      }
+
+      #videoInput {
+        position: fixed;
+        left: 18px;
+        top: 18px;
+        z-index: 20;
+        width: 260px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: white;
+      }
+
+      #status {
+        position: fixed;
+        left: 18px;
+        bottom: 18px;
+        z-index: 20;
+        background: rgba(0,0,0,0.35);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-family: Arial, sans-serif;
       }
     </style>
+
     <script type="importmap">
-			{
-				"imports": {
-					"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
           "jsm/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
         }
-			}
-		</script>
+      }
+    </script>
   </head>
   <body>
+    <input id="videoInput" type="file" accept="video/*" />
+    <div id="status">Loading…</div>
+
+    <div id="videoPanel">
+      <video id="sourceVideo" muted playsinline loop crossorigin="anonymous"></video>
+    </div>
+
     <script type="module" src="index.js"></script>
   </body>
 </html>
